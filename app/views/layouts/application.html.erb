@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NewsServer</title>
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <ul class="hmenu">
+    <li><%= render 'devise/menu/registration_items' %></li>
+    <li><%= render 'devise/menu/login_items' %></li>
+  </ul>
+  <p style="color: green"><%= notice %></p>
+  <p style="color: red"><%= alert %></p>
+<%= yield %>
+
+</body>
+</html>
