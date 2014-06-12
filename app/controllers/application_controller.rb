@@ -9,18 +9,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) << :name << :age << :gender << :profession << :phone << :companyName
-  end
-
-  def if_first_visit_of_user_then_redirect
-    if current_user.first_visit == true
-      current_user.first_visit = false
-      current_user.generated_password = nil
-      current_user.save
-      reset_session
-      flash[:notice] = "Letter with password was sent to your email"
-      redirect_to new_user_session_path
-    end
+    devise_parameter_sanitizer.for(:sign_up) << :name
   end
 
   def format_json?
