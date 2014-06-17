@@ -47,25 +47,39 @@ describe "Users" do
     describe "success" do
       it "should make a new user" do
         lambda do
+          message = "A message with a confirmation link has been sent to your email address." +
+                    " Please open the link to activate your account."
           visit new_user_registration_path
           fill_in "Name",         :with => @user.name
           fill_in "Email",        :with => "admin@mail.ru"
           fill_in "Password",     :with => @user.password
           fill_in "Password confirmation", :with => @user.password
           click_button 'Sign up'
-          page.html.should match("A message with a confirmation link has been sent to your email address. Please open the link to activate your account.")
+          page.html.should match(message)
         end.should change(User, :count).by(1)
       end
     end
   end
-=begin
+
   describe "signup for json" do
 
-    describe "failure" do
-      it "should not make a new user" do
+    describe "failure should not make a new user" do
+      it "if name field is empty" do
         lambda do
-          post "/user_sign_up", :username => "jdoe", :password => "secret", :password_confirmation => "secret"
-        end.should_not change(User, :count)
+          post "/user_sign_up", { :name => "",
+                                  :email => "admin@mail.ru",
+                                  :password => "password8",
+                                  :password_confirmation => "password8"
+                                 },
+                                 { 'HTTP_ACCEPT' => "application/json",
+                                   'CONTENT_TYPE' => "application/x-www-form-urlencoded" }
+          parsed_body = JSON.parse(response.body)
+puts parsed_body
+          expect(parsed_body).to eq({"meta" => {"success"=>false, "count"=>1,
+                                                "totalCount"=>1, "countPerPage"=>1, "pageIndex"=>1
+                                                },
+                                                "data"=>[{"error"=>{"description"=>"name can't be blank"}}]})
+       end.should_not change(User, :count)
       end
     end
 
@@ -78,12 +92,12 @@ describe "Users" do
           fill_in "Password",     :with => "foobar"
           fill_in "Password confirmation", :with => "foobar"
           click_button 'Sign up'
-          page.html.should match("A message with a confirmation link has been sent to your email address. Please open the link to activate your account.")
+          page.html.should match("A message with a confirmation")
         end.should change(User, :count).by(1)
       end
     end
   end
-=end
+
   describe "sign in/out" do
 
     describe "failure" do
