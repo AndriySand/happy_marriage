@@ -1,18 +1,15 @@
 NewsServer::Application.routes.draw do
-  resources :articles
 
-  post 'articles_between_dates' => 'articles#articles_between_dates'
-  devise_for :users
-  root "articles#index"
-  namespace :api do
-    namespace :v1 do
-      devise_scope :user do
-        post 'user' => 'registrations#create', :as => 'register'
-        post 'sessions' => 'sessions#create', :as => 'login'
-        delete 'sessions' => 'sessions#destroy', :as => 'logout'
-      end
-    end
-  end
+#  devise_for :users
+#  post 'user_sign_up' => 'registrations#json_create', :as => 'register'
+devise_for :users, :controllers => { :registrations => "registrations" }
+devise_scope :user do
+  post 'user_sign_up' => 'registrations#json_create', :as => 'register'
+  match '/sessions' => 'sessions#create', :via => :post
+  match '/sessions' => 'sessions#destroy', :via => :delete
+end
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
